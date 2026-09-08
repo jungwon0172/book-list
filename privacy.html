@@ -12,6 +12,14 @@
 <meta property="og:url" content="https://your-domain.com/privacy.html" />
 
 <meta name="naver-site-verification" content="94036a1381612caa27bb5603e05f2cc52f9e1044" />
+<script>
+(function(){
+  try{
+    var t = localStorage.getItem('bookshelf.theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+  }catch(e){}
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -29,19 +37,27 @@
       <a href="index.html" class="">홈</a>
       <a href="list.html" class="">독서리스트</a>
       <a href="board.html" class="">친구와 함께</a>
+      <a href="sync.html" class="">동기화</a>
       <a href="guide.html" class="">가이드</a>
     </nav>
+    <div class="header-right">
+      <div class="nick-box">
+        <label>닉네임</label>
+        <input class="nick-input" placeholder="이름 입력" maxlength="14" />
+      </div>
+      <button class="theme-toggle" id="themeToggle">☀️ 라이트 모드</button>
+    </div>
   </div>
 </header>
 
 <div class="wrap content-page">
   <h1>개인정보처리방침</h1>
-  <p class="subtitle">최종 수정일: 2026년 8월</p>
+  <p class="subtitle">최종 수정일: 2026년 9월</p>
 
   <h2>1. 수집하는 정보</h2>
-  <p>책장은 별도의 회원가입 절차가 없으며, 입력하신 닉네임과 독서 기록(책 제목, 상태, 날짜, 평점, 한줄평)은
+  <p>책장은 별도의 회원가입 절차가 없으며, 입력하신 닉네임과 독서 기록(책 제목, 상태, 읽은 기간, 평점, 한줄평)은
   서버로 전송되지 않고 사용자의 브라우저(localStorage)에만 저장됩니다. '친구와 함께' 기능에서 생성되는 공유 링크에는
-  닉네임과 목표·완료 권수만 포함되며, 이는 사용자가 직접 전송을 선택한 경우에만 다른 사람의 브라우저에 저장됩니다.</p>
+  익명 식별자, 닉네임, 목표·완료 권수만 포함되며, 이는 사용자가 직접 전송을 선택한 경우에만 다른 사람의 브라우저에 저장됩니다.</p>
 
   <h2>2. 쿠키 및 광고</h2>
   <p>이 사이트는 Google AdSense를 통해 광고를 게재하며, Google 및 광고 파트너는 쿠키를 사용하여 사용자의 이전

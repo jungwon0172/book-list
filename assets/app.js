@@ -8,7 +8,7 @@ const STATUS = {
   want: { label:'읽고 싶음', class:'want' },
 };
 
-const LS_KEYS = { settings:'bookshelf.settings', books:'bookshelf.books', friends:'bookshelf.friends' };
+const LS_KEYS = { settings:'bookshelf.settings', books:'bookshelf.books', friends:'bookshelf.friends', myid:'bookshelf.myid', theme:'bookshelf.theme' };
 
 function loadSettings(){
   try{
@@ -16,26 +16,26 @@ function loadSettings(){
     return raw ? JSON.parse(raw) : { nickname:'', yearGoal:50 };
   }catch(e){ return { nickname:'', yearGoal:50 }; }
 }
-function saveSettings(s){
-  try{ localStorage.setItem(LS_KEYS.settings, JSON.stringify(s)); }catch(e){}
-}
+function saveSettings(s){ try{ localStorage.setItem(LS_KEYS.settings, JSON.stringify(s)); }catch(e){} }
 function loadBooks(){
-  try{
-    const raw = localStorage.getItem(LS_KEYS.books);
-    return raw ? JSON.parse(raw) : [];
-  }catch(e){ return []; }
+  try{ const raw = localStorage.getItem(LS_KEYS.books); return raw ? JSON.parse(raw) : []; }
+  catch(e){ return []; }
 }
-function saveBooks(books){
-  try{ localStorage.setItem(LS_KEYS.books, JSON.stringify(books)); }catch(e){}
-}
+function saveBooks(books){ try{ localStorage.setItem(LS_KEYS.books, JSON.stringify(books)); }catch(e){} }
 function loadFriends(){
-  try{
-    const raw = localStorage.getItem(LS_KEYS.friends);
-    return raw ? JSON.parse(raw) : [];
-  }catch(e){ return []; }
+  try{ const raw = localStorage.getItem(LS_KEYS.friends); return raw ? JSON.parse(raw) : []; }
+  catch(e){ return []; }
 }
-function saveFriends(friends){
-  try{ localStorage.setItem(LS_KEYS.friends, JSON.stringify(friends)); }catch(e){}
+function saveFriends(friends){ try{ localStorage.setItem(LS_KEYS.friends, JSON.stringify(friends)); }catch(e){} }
+
+// 나를 구분하는 고유 ID (닉네임이 겹치거나 비어 있어도 항상 나를 구분하기 위함)
+function getMyId(){
+  let id = localStorage.getItem(LS_KEYS.myid);
+  if(!id){
+    id = 'u' + Date.now().toString(36) + Math.random().toString(36).slice(2,8);
+    localStorage.setItem(LS_KEYS.myid, id);
+  }
+  return id;
 }
 
 let state = {
@@ -43,31 +43,52 @@ let state = {
   books: loadBooks(),
   year: new Date().getFullYear(),
   filter: 'all',
+  myId: getMyId(),
 };
 
 function toast(msg){
   let t = $('#toast');
-  if(!t){
-    t = document.createElement('div');
-    t.id = 'toast'; t.className = 'toast';
-    document.body.appendChild(t);
-  }
+  if(!t){ t = document.createElement('div'); t.id = 'toast'; t.className = 'toast'; document.body.appendChild(t); }
   t.textContent = msg;
   t.classList.add('show');
   clearTimeout(toast._h);
   toast._h = setTimeout(()=> t.classList.remove('show'), 2200);
 }
 
-function sameYear(dateStr){
-  if(!dateStr) return true;
-  return new Date(dateStr).getFullYear() === state.year;
+function sameYear(book){
+  const d = book.endDate || book.date;
+  if(!d) return true;
+  return new Date(d).getFullYear() === state.year;
 }
 function escapeHtml(s){
   return (s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
-function seededRand(seed){
-  const x = Math.sin(seed*999)*10000;
-  return x - Math.floor(x);
+function seededRand(seed){ const x = Math.sin(seed*999)*10000; return x - Math.floor(x); }
+function fmtRange(b){
+  const s = b.startDate, e = b.endDate || b.date;
+  if(s && e) return s + ' ~ ' + e;
+  if(e) return e;
+  if(s) return s + ' ~';
+  return '';
+}
+
+// ===== 테마 (라이트 / 다크) =====
+function applyTheme(theme){
+  document.documentElement.setAttribute('data-theme', theme);
+  const btn = $('#themeToggle');
+  if(btn) btn.innerHTML = theme==='light' ? '🌙 다크 모드' : '☀️ 라이트 모드';
+}
+function initTheme(){
+  const saved = localStorage.getItem(LS_KEYS.theme) || 'dark';
+  applyTheme(saved);
+  const btn = $('#themeToggle');
+  if(!btn) return;
+  btn.addEventListener('click', ()=>{
+    const cur = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+    const next = cur === 'light' ? 'dark' : 'light';
+    localStorage.setItem(LS_KEYS.theme, next);
+    applyTheme(next);
+  });
 }
 
 // ===== 쿠키 동의 배너 =====
@@ -78,9 +99,7 @@ function initCookieBanner(){
   el.innerHTML = `
     <p>이 사이트는 서비스 개선과 광고 게재를 위해 쿠키를 사용합니다. 자세한 내용은
     <a href="/privacy.html">개인정보처리방침</a>에서 확인하세요.</p>
-    <div class="actions">
-      <button class="btn small" id="cookieAccept">동의</button>
-    </div>`;
+    <div class="actions"><button class="btn small" id="cookieAccept">동의</button></div>`;
   document.body.appendChild(el);
   $('#cookieAccept').addEventListener('click', ()=>{
     localStorage.setItem('bookshelf.cookieConsent', '1');
@@ -92,7 +111,7 @@ function initCookieBanner(){
 function renderShelf(){
   const shelf = $('#shelf');
   if(!shelf) return;
-  const done = state.books.filter(b=>b.status==='done' && sameYear(b.date));
+  const done = state.books.filter(b=>b.status==='done' && sameYear(b));
   const countEl = $('#doneCount');
   if(countEl) countEl.textContent = done.length;
   const pct = Math.min(100, Math.round((done.length/Math.max(1,state.settings.yearGoal))*100));
@@ -150,14 +169,13 @@ function initGoalControls(){
     renderShelf();
   });
 }
-
 function initNickInput(){
-  const nick = $('#nickInput');
-  if(!nick) return;
-  nick.value = state.settings.nickname;
-  nick.addEventListener('change', (e)=>{
-    state.settings.nickname = e.target.value.trim();
-    saveSettings(state.settings);
+  $$('.nick-input').forEach(nick=>{
+    nick.value = state.settings.nickname;
+    nick.addEventListener('change', (e)=>{
+      state.settings.nickname = e.target.value.trim();
+      saveSettings(state.settings);
+    });
   });
 }
 
@@ -177,6 +195,7 @@ function renderCards(){
     const card = document.createElement('div');
     card.className = 'card';
     const stars = b.rating ? '★'.repeat(b.rating) + '☆'.repeat(5-b.rating) : '';
+    const range = fmtRange(b);
     card.innerHTML = `
       <div class="card-main">
         <div class="card-title-row">
@@ -185,7 +204,7 @@ function renderCards(){
         </div>
         ${b.author ? `<div class="card-author">${escapeHtml(b.author)}</div>` : ''}
         <div class="card-meta">
-          ${b.date ? `<span>${b.date}</span>` : ''}
+          ${range ? `<span class="date-range">📅 ${range}</span>` : ''}
           ${stars ? `<span class="stars">${stars}</span>` : ''}
         </div>
         ${b.review ? `<div class="card-review">${escapeHtml(b.review)}</div>` : ''}
@@ -222,8 +241,14 @@ function openForm(editId){
             <option value="reading" ${b?.status==='reading'?'selected':''}>읽는 중</option>
             <option value="done" ${!b || b.status==='done'?'selected':''}>완료</option>
           </select></div>
-        <div class="field"><label>읽은 날짜</label>
-          <input id="f-date" type="date" value="${b?.date||''}" /></div>
+        <div class="field full"><label>읽은 기간</label>
+          <div class="date-range-row">
+            <input id="f-startdate" type="date" value="${b?.startDate||''}" />
+            <span class="tilde">부터 ~</span>
+            <input id="f-enddate" type="date" value="${b?.endDate||b?.date||''}" />
+            <span class="tilde">까지</span>
+          </div>
+        </div>
         <div class="field"><label>평점</label>
           <div class="star-pick" id="f-stars">
             ${[1,2,3,4,5].map(n=>`<span data-n="${n}" class="${b && b.rating>=n?'on':''}">★</span>`).join('')}
@@ -247,10 +272,15 @@ function openForm(editId){
   $('#f-save').addEventListener('click', ()=>{
     const title = $('#f-title').value.trim();
     if(!title){ toast('책 제목을 입력해주세요'); return; }
+    const startDate = $('#f-startdate').value;
+    const endDate = $('#f-enddate').value;
+    if(startDate && endDate && startDate > endDate){
+      toast('시작일이 종료일보다 늦을 수 없어요'); return;
+    }
     const payload = {
       id: b ? b.id : (Date.now()+Math.random()).toString(36),
       title, author: $('#f-author').value.trim(), status: $('#f-status').value,
-      date: $('#f-date').value, rating: ratingVal, review: $('#f-review').value.trim(),
+      startDate, endDate, rating: ratingVal, review: $('#f-review').value.trim(),
       updatedAt: Date.now(),
     };
     state.books = b ? state.books.map(x=> x.id===b.id ? payload : x) : [...state.books, payload];
@@ -286,24 +316,21 @@ function unicodeToB64(str){ return encodeURIComponent(str).replace(/%([0-9A-F]{2
 function b64ToUnicode(str){ return decodeURIComponent(Array.from(str).map(c=> '%'+('00'+c.charCodeAt(0).toString(16)).slice(-2)).join('')); }
 
 function myProgress(){
-  const done = state.books.filter(b=>b.status==='done' && sameYear(b.date)).length;
-  return { n: state.settings.nickname || '나', g: state.settings.yearGoal, c: done, t: Date.now() };
+  const done = state.books.filter(b=>b.status==='done' && sameYear(b)).length;
+  return { id: state.myId, n: state.settings.nickname || '나', g: state.settings.yearGoal, c: done, t: Date.now() };
 }
 
 function initBoardPage(){
   const linkInput = $('#shareLinkInput');
   if(!linkInput) return;
 
-  // 내 진행 상황으로 공유 링크 생성
   function buildLink(){
     const code = b64encode(myProgress());
-    const url = new URL(window.location.href);
+    const url = new URL(window.location.href.split('?')[0]);
     url.search = '?d=' + code;
     linkInput.value = url.toString();
   }
   buildLink();
-  const goalInputWatch = $('#goalInput');
-  // settings may change on other pages; rebuild link on focus
   window.addEventListener('focus', buildLink);
 
   $('#copyLinkBtn').addEventListener('click', ()=>{
@@ -312,24 +339,22 @@ function initBoardPage(){
     catch(e){ toast('복사에 실패했어요. 직접 선택해 복사해주세요'); }
   });
 
-  // URL에 ?d= 코드가 있으면 friends 목록에 반영
+  // URL에 ?d= 코드가 있으면 friends 목록에 반영 (내 id는 절대 friends로 저장하지 않음)
   const params = new URLSearchParams(window.location.search);
   if(params.get('d')){
     try{
       const data = b64decode(params.get('d'));
-      if(data && data.n){
+      if(data && data.id && data.id !== state.myId){
         let friends = loadFriends();
-        friends = friends.filter(f=> f.n !== data.n);
+        friends = friends.filter(f=> f.id !== data.id);
         friends.push(data);
         saveFriends(friends);
-        toast(data.n + '님의 진행 상황을 받았어요');
+        toast((data.n||'친구') + '님의 진행 상황을 받았어요');
       }
     }catch(e){ /* 잘못된 코드 무시 */ }
-    // URL 정리
     window.history.replaceState({}, '', window.location.pathname);
   }
 
-  // 닉네임으로 직접 추가하기 (같은 기기에서 링크로 못 받은 경우 수동 입력용은 아님 — 코드 붙여넣기)
   const pasteBtn = $('#pasteAddBtn');
   if(pasteBtn){
     pasteBtn.addEventListener('click', ()=>{
@@ -339,13 +364,14 @@ function initBoardPage(){
         const url = new URL(raw);
         const code = new URLSearchParams(url.search).get('d');
         const data = b64decode(code);
+        if(data.id === state.myId){ toast('내 링크는 추가할 수 없어요'); return; }
         let friends = loadFriends();
-        friends = friends.filter(f=> f.n !== data.n);
+        friends = friends.filter(f=> f.id !== data.id);
         friends.push(data);
         saveFriends(friends);
         $('#pasteInput').value = '';
         renderBoard();
-        toast(data.n + '님을 추가했어요');
+        toast((data.n||'친구') + '님을 추가했어요');
       }catch(e){ toast('올바른 공유 링크가 아니에요'); }
     });
   }
@@ -356,17 +382,15 @@ function initBoardPage(){
 function renderBoard(){
   const lb = $('#lbList');
   if(!lb) return;
-  const friends = loadFriends();
+  const friends = loadFriends().filter(f=> f.id !== state.myId);
   const me = myProgress();
-  const all = [...friends.filter(f=>f.n!==me.n), me];
-  if(all.length<=1 && friends.length===0){
-    lb.innerHTML = `<div class="empty-state"><div class="big">아직 함께하는 친구가 없어요</div>위에서 내 공유 링크를 복사해 친구에게 보내보세요. 친구가 보낸 링크를 열면 자동으로 목록에 추가돼요.</div>`;
-  }
+  const all = [...friends, me];
+
   all.sort((a,b)=> (b.c/Math.max(1,b.g)) - (a.c/Math.max(1,a.g)));
   lb.innerHTML = '';
   all.forEach((e,i)=>{
     const pct = Math.min(100, Math.round((e.c/Math.max(1,e.g))*100));
-    const isMe = e.n === me.n;
+    const isMe = e.id === state.myId;
     const row = document.createElement('div');
     row.className = 'lb-row';
     row.innerHTML = `
@@ -374,25 +398,89 @@ function renderBoard(){
       <div class="lb-name">${escapeHtml(e.n)}${isMe?' (나)':''}</div>
       <div class="lb-bar-wrap"><div class="lb-bar" style="width:${pct}%"></div></div>
       <div class="lb-num">${e.c}/${e.g}권</div>
-      ${!isMe ? `<button class="lb-del" data-del="${escapeHtml(e.n)}" title="삭제">✕</button>` : '<span style="width:14px"></span>'}
+      ${!isMe ? `<button class="lb-del" data-del="${escapeHtml(e.id)}" title="삭제">✕</button>` : '<span style="width:14px"></span>'}
     `;
     lb.appendChild(row);
   });
+  if(friends.length===0){
+    const note = document.createElement('div');
+    note.className = 'empty-state';
+    note.innerHTML = `<div class="big">아직 함께하는 친구가 없어요</div>위에서 내 공유 링크를 복사해 친구에게 보내보세요. 친구가 보낸 링크를 열거나 아래에 붙여넣으면 자동으로 추가돼요.`;
+    lb.appendChild(note);
+  }
   $$('.lb-del', lb).forEach(btn=>{
     btn.addEventListener('click', ()=>{
-      let friends = loadFriends().filter(f=> f.n !== btn.dataset.del);
-      saveFriends(friends);
+      let fr = loadFriends().filter(f=> f.id !== btn.dataset.del);
+      saveFriends(fr);
       renderBoard();
     });
   });
 }
 
+// ===== 기기 간 동기화 (수동, 코드 기반, 서버 없음) — sync.html =====
+function exportCode(){
+  return b64encode({ v:1, settings: state.settings, books: state.books, exportedAt: Date.now() });
+}
+function initSyncPage(){
+  const exportArea = $('#exportCode');
+  if(!exportArea) return;
+
+  function refreshExport(){
+    exportArea.value = exportCode();
+    const info = $('#exportInfo');
+    if(info) info.textContent = `책 ${state.books.length}권 · 목표 ${state.settings.yearGoal}권 포함`;
+  }
+  refreshExport();
+
+  $('#copyExportBtn').addEventListener('click', ()=>{
+    exportArea.select();
+    try{ document.execCommand('copy'); toast('코드를 복사했어요'); }
+    catch(e){ toast('복사에 실패했어요. 직접 선택해 복사해주세요'); }
+  });
+
+  $('#importBtn').addEventListener('click', ()=>{
+    const raw = $('#importCode').value.trim();
+    if(!raw){ toast('가져올 코드를 붙여넣어주세요'); return; }
+    let data;
+    try{ data = b64decode(raw); }
+    catch(e){ toast('올바른 동기화 코드가 아니에요'); return; }
+    if(!data || !Array.isArray(data.books)){ toast('올바른 동기화 코드가 아니에요'); return; }
+
+    // 책 목록은 id 기준으로 합치기 (겹치는 id는 최신 updatedAt 우선)
+    const map = {};
+    state.books.forEach(b=> map[b.id]=b);
+    data.books.forEach(b=>{
+      const cur = map[b.id];
+      if(!cur || (b.updatedAt||0) > (cur.updatedAt||0)) map[b.id]=b;
+    });
+    const merged = Object.values(map);
+    const addedCount = merged.length - state.books.length;
+    state.books = merged;
+    saveBooks(state.books);
+
+    if(data.settings){
+      const applySettings = confirm(
+        `목표 권수(${data.settings.yearGoal}권)와 닉네임(${data.settings.nickname||'미설정'})도 이 코드 기준으로 덮어쓸까요?\n취소하면 책 목록만 합쳐집니다.`
+      );
+      if(applySettings){
+        state.settings = data.settings;
+        saveSettings(state.settings);
+      }
+    }
+    $('#importCode').value = '';
+    refreshExport();
+    toast(`동기화 완료 (새 책 ${Math.max(0,addedCount)}권 반영)`);
+  });
+}
+
 // ===== init =====
 document.addEventListener('DOMContentLoaded', ()=>{
+  initTheme();
   initCookieBanner();
   initGoalControls();
   initNickInput();
   renderShelf();
   initListPage();
   initBoardPage();
+  initSyncPage();
 });

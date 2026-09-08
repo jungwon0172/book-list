@@ -10,6 +10,9 @@
     <loc>https://your-domain.com/board.html</loc>
   </url>
   <url>
+    <loc>https://your-domain.com/sync.html</loc>
+  </url>
+  <url>
     <loc>https://your-domain.com/guide.html</loc>
   </url>
   <url>

@@ -12,6 +12,14 @@
 <meta property="og:url" content="https://your-domain.com/guide.html" />
 
 <meta name="naver-site-verification" content="94036a1381612caa27bb5603e05f2cc52f9e1044" />
+<script>
+(function(){
+  try{
+    var t = localStorage.getItem('bookshelf.theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+  }catch(e){}
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -29,8 +37,16 @@
       <a href="index.html" class="">홈</a>
       <a href="list.html" class="">독서리스트</a>
       <a href="board.html" class="">친구와 함께</a>
+      <a href="sync.html" class="">동기화</a>
       <a href="guide.html" class="active">가이드</a>
     </nav>
+    <div class="header-right">
+      <div class="nick-box">
+        <label>닉네임</label>
+        <input class="nick-input" placeholder="이름 입력" maxlength="14" />
+      </div>
+      <button class="theme-toggle" id="themeToggle">☀️ 라이트 모드</button>
+    </div>
   </div>
 </header>
 
@@ -46,9 +62,9 @@
   <p>작년에 몇 권을 읽었는지 기억나지 않는다면, 올해 목표도 감으로 잡게 됩니다. 책장 페이지에 몇 권이라도 기록을 남기기 시작하면,
   다음 해 목표를 세울 때 실제 독서 속도를 근거로 현실적인 숫자를 정할 수 있어요.</p>
 
-  <h2>3. '읽고 싶음' 목록을 비워두지 마세요</h2>
-  <p>다음에 읽을 책을 매번 새로 고민하면 그 자체가 진입장벽이 됩니다. 지금 읽는 책을 다 읽기 전에 다음 후보 2~3권을
-  미리 '읽고 싶음' 상태로 적어두면, 완독 직후 공백 없이 바로 다음 책으로 넘어갈 수 있어요.</p>
+  <h2>3. 읽은 기간을 함께 적어두면 속도가 보입니다</h2>
+  <p>시작일과 종료일을 같이 기록하면 어떤 책을 며칠 만에 읽었는지가 드러납니다. 두꺼운 책에 유독 오래 걸렸다면
+  다음 챌린지에서는 분량을 감안해 목표를 조정하는 식으로 활용할 수 있어요.</p>
 
   <h2>4. 완주보다 재개가 중요합니다</h2>
   <p>독서 챌린지가 무너지는 시점은 대부분 '하루 못 읽어서'가 아니라 '못 읽은 며칠이 쌓여 포기하는 순간'이에요.

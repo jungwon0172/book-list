@@ -4,14 +4,22 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>독서리스트 — 책장</title>
-<meta name="description" content="읽은 책과 읽고 싶은 책을 상태별로 기록하고 관리하는 독서리스트." />
+<meta name="description" content="읽은 기간, 상태, 평점, 한줄평까지 기록하는 독서리스트." />
 <link rel="canonical" href="https://your-domain.com/list.html" />
 <meta property="og:title" content="독서리스트 — 책장" />
-<meta property="og:description" content="읽은 책과 읽고 싶은 책을 상태별로 기록하고 관리하는 독서리스트." />
+<meta property="og:description" content="읽은 기간, 상태, 평점, 한줄평까지 기록하는 독서리스트." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://your-domain.com/list.html" />
 
 <meta name="naver-site-verification" content="94036a1381612caa27bb5603e05f2cc52f9e1044" />
+<script>
+(function(){
+  try{
+    var t = localStorage.getItem('bookshelf.theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+  }catch(e){}
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -29,14 +37,22 @@
       <a href="index.html" class="">홈</a>
       <a href="list.html" class="active">독서리스트</a>
       <a href="board.html" class="">친구와 함께</a>
+      <a href="sync.html" class="">동기화</a>
       <a href="guide.html" class="">가이드</a>
     </nav>
+    <div class="header-right">
+      <div class="nick-box">
+        <label>닉네임</label>
+        <input class="nick-input" placeholder="이름 입력" maxlength="14" />
+      </div>
+      <button class="theme-toggle" id="themeToggle">☀️ 라이트 모드</button>
+    </div>
   </div>
 </header>
 
 <div class="wrap">
   <h1 class="page-title">독서리스트</h1>
-  <p class="page-sub">읽은 책, 읽는 중인 책, 읽고 싶은 책을 한곳에서 관리하세요.</p>
+  <p class="page-sub">읽은 책, 읽는 중인 책, 읽고 싶은 책을 한곳에서 관리하세요. 몇 월 며칠부터 며칠까지 읽었는지도 함께 기록할 수 있어요.</p>
 
   <div class="list-controls">
     <div class="filters">
