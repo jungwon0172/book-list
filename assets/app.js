@@ -23,8 +23,21 @@ function loadBooks(){
 }
 function saveBooks(books){ try{ localStorage.setItem(LS_KEYS.books, JSON.stringify(books)); }catch(e){} }
 function loadFriends(){
-  try{ const raw = localStorage.getItem(LS_KEYS.friends); return raw ? JSON.parse(raw) : []; }
-  catch(e){ return []; }
+  try{
+    const raw = localStorage.getItem(LS_KEYS.friends);
+    let friends = raw ? JSON.parse(raw) : [];
+    // 예전 버전에서 저장된, id가 없는 친구 항목을 자동 보정 (삭제 버튼이 매칭 못 하던 문제 수정)
+    let changed = false;
+    friends = friends.map((f, i)=>{
+      if(!f.id){
+        changed = true;
+        return { ...f, id: 'legacy' + i + '_' + Math.random().toString(36).slice(2,8) };
+      }
+      return f;
+    });
+    if(changed) saveFriends(friends);
+    return friends;
+  }catch(e){ return []; }
 }
 function saveFriends(friends){ try{ localStorage.setItem(LS_KEYS.friends, JSON.stringify(friends)); }catch(e){} }
 
