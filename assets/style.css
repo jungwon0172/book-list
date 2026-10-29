@@ -240,3 +240,48 @@ nav.main-nav a.active, nav.main-nav a:hover{ color: var(--gold); text-decoration
   .form-grid{ grid-template-columns: 1fr; }
   .goal-line .count{ font-size:34px; }
 }
+
+/* ---------- Util nav (소개/문의, 우측 상단) ---------- */
+.util-nav{ display:flex; gap:12px; }
+.util-nav a{ color: var(--text-muted); font-size:13px; }
+.util-nav a:hover, .util-nav a.active{ color: var(--gold); text-decoration:none; }
+
+/* ---------- Calendar ---------- */
+.cal-card{ background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:18px; margin-bottom:16px; }
+.cal-head{ display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+.cal-title{ flex:1; text-align:center; font-family:'Fraunces', serif; font-size:20px; font-weight:600; }
+.cal-summary{ text-align:center; font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--text-muted); margin-bottom:14px; }
+.cal-grid{ display:grid; grid-template-columns:repeat(7, 1fr); gap:4px; }
+.cal-wd{ text-align:center; font-size:12px; color:var(--text-muted); padding:4px 0; }
+.cal-wd.sun{ color: var(--rust); }
+.cal-cell{
+  min-height:64px; background:var(--surface-2); border:1px solid transparent; border-radius:8px;
+  padding:6px; display:flex; flex-direction:column; align-items:flex-start; justify-content:space-between;
+  cursor:pointer; color:var(--text); font-family:'Inter'; font-size:13px; text-align:left;
+}
+.cal-cell.empty{ background:transparent; cursor:default; }
+.cal-cell.sun .cal-num{ color: var(--rust); }
+.cal-cell.today{ border-color: var(--gold); }
+.cal-cell.selected{ background: var(--gold-soft); border-color: var(--gold); }
+.cal-cell:not(.empty):hover{ border-color: var(--gold); }
+.cal-bottom{ display:flex; align-items:center; justify-content:space-between; width:100%; }
+.cal-dots{ display:flex; gap:3px; flex-wrap:wrap; }
+.cal-dot{ width:7px; height:7px; border-radius:50%; }
+.cal-dot.done{ background:var(--teal); }
+.cal-dot.reading{ background:var(--gold); }
+.cal-dot.want{ background:var(--lavender); }
+.cal-check{ font-size:11px; color:var(--teal); font-weight:700; }
+.cal-detail .card{ margin-bottom:8px; }
+.cal-detail-title{ font-family:'Fraunces', serif; font-size:17px; margin:0 0 10px; }
+@media (max-width:520px){
+  .cal-cell{ min-height:48px; padding:4px; font-size:12px; }
+  .cal-card{ padding:12px; }
+}
+
+/* ---------- 날짜 입력 달력 아이콘: 다크 모드에서 흰색으로 ---------- */
+:root:not([data-theme="light"]) input[type="date"]::-webkit-calendar-picker-indicator{
+  filter: invert(1);
+  opacity: 0.9;
+  cursor: pointer;
+}
+input[type="date"]::-webkit-calendar-picker-indicator{ cursor:pointer; }

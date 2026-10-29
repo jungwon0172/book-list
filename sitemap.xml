@@ -7,6 +7,9 @@
     <loc>https://your-domain.com/list.html</loc>
   </url>
   <url>
+    <loc>https://your-domain.com/calendar.html</loc>
+  </url>
+  <url>
     <loc>https://your-domain.com/board.html</loc>
   </url>
   <url>

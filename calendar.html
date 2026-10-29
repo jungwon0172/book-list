@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>독서 달력 — 책장</title>
+<meta name="description" content="읽은 기간을 달력으로 한눈에 확인하는 독서 달력." />
+<link rel="canonical" href="https://your-domain.com/calendar.html" />
+<meta property="og:title" content="독서 달력 — 책장" />
+<meta property="og:description" content="읽은 기간을 달력으로 한눈에 확인하는 독서 달력." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://your-domain.com/calendar.html" />
+
+<meta name="naver-site-verification" content="94036a1381612caa27bb5603e05f2cc52f9e1044" />
+<script>
+(function(){
+  try{
+    var t = localStorage.getItem('bookshelf.theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+  }catch(e){}
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css" />
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2557338953436433" crossorigin="anonymous"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="site-header-inner">
+    <div class="brand">
+      <a href="index.html">책장</a>
+      <span>올해의 독서 목표를 채워가는 나만의 책장</span>
+    </div>
+    <nav class="main-nav">
+      <a href="index.html" class="">홈</a>
+      <a href="list.html" class="">독서리스트</a>
+      <a href="calendar.html" class="active">달력</a>
+      <a href="board.html" class="">친구와 함께</a>
+      <a href="sync.html" class="">동기화</a>
+      <a href="guide.html" class="">가이드</a>
+    </nav>
+    <div class="header-right">
+      <nav class="util-nav">
+        <a href="about.html" class="">소개</a>
+        <a href="contact.html" class="">문의</a>
+      </nav>
+      <div class="nick-box">
+        <label>닉네임</label>
+        <input class="nick-input" placeholder="이름 입력" maxlength="14" />
+      </div>
+      <button class="theme-toggle" id="themeToggle">☀️ 라이트 모드</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1 class="page-title">독서 달력</h1>
+  <p class="page-sub">독서리스트에 기록한 읽은 기간이 달력에 표시돼요. 날짜를 누르면 그날 읽은 책을 볼 수 있어요.</p>
+
+  <div class="cal-card">
+    <div class="cal-head">
+      <button class="btn ghost small" id="calPrev" aria-label="이전 달">‹</button>
+      <div class="cal-title" id="calTitle"></div>
+      <button class="btn ghost small" id="calNext" aria-label="다음 달">›</button>
+      <button class="btn ghost small" id="calToday">오늘</button>
+    </div>
+    <div class="cal-summary" id="calSummary"></div>
+    <div class="cal-grid" id="calGrid"></div>
+    <div class="legend">
+      <span><i class="dot" style="background:var(--teal)"></i>완독한 책</span>
+      <span><i class="dot" style="background:var(--gold)"></i>읽는 중</span>
+      <span><i class="dot" style="background:var(--lavender)"></i>기타</span>
+      <span>✓ 완독한 날</span>
+    </div>
+  </div>
+
+  <div class="cal-detail" id="calDetail"></div>
+
+  <div class="ad-slot">
+  <div class="ad-label">광고</div>
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-2557338953436433"
+       data-ad-slot="0000000000"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div>
+</div>
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div>&copy; 책장. 문의: <a href="mailto:yjw2172@naver.com">yjw2172@naver.com</a></div>
+    <nav>
+      <a href="privacy.html">개인정보처리방침</a>
+      <a href="terms.html">이용약관</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
+

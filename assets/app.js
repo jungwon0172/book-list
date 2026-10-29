@@ -486,6 +486,113 @@ function initSyncPage(){
   });
 }
 
+// ===== 독서 달력 — calendar.html =====
+function pad2(n){ return String(n).padStart(2,'0'); }
+function ymd(y, m, d){ return y + '-' + pad2(m+1) + '-' + pad2(d); }
+function todayStr(){ const t = new Date(); return ymd(t.getFullYear(), t.getMonth(), t.getDate()); }
+
+// 해당 날짜(YYYY-MM-DD)에 읽은 것으로 기록된 책들 (문자열 비교로 시간대 문제 방지)
+function booksOnDate(d){
+  const today = todayStr();
+  return state.books.filter(b=>{
+    const s = b.startDate, e = b.endDate || b.date;
+    if(s && e) return s <= d && d <= e;
+    if(e) return d === e;
+    if(s) return b.status === 'reading' ? (s <= d && d <= today) : d === s;
+    return false;
+  });
+}
+
+function initCalendarPage(){
+  const grid = $('#calGrid');
+  if(!grid) return;
+  const now = new Date();
+  let cy = now.getFullYear(), cm = now.getMonth();
+  let selected = todayStr();
+  const WD = ['일','월','화','수','목','금','토'];
+
+  function renderDetail(){
+    const box = $('#calDetail');
+    const [y, m, d] = selected.split('-').map(Number);
+    const wd = WD[new Date(y, m-1, d).getDay()];
+    const list = booksOnDate(selected);
+    let html = `<h3 class="cal-detail-title">${m}월 ${d}일 (${wd})</h3>`;
+    if(list.length === 0){
+      html += `<div class="empty-state" style="padding:20px;">이 날 기록된 독서가 없어요. <a href="list.html">독서리스트</a>에서 읽은 기간을 입력해보세요.</div>`;
+    } else {
+      list.forEach(b=>{
+        const stars = b.rating ? '★'.repeat(b.rating) + '☆'.repeat(5-b.rating) : '';
+        const range = fmtRange(b);
+        const finished = (b.endDate || b.date) === selected && b.status === 'done';
+        html += `<div class="card"><div class="card-main">
+          <div class="card-title-row">
+            <span class="card-title">${escapeHtml(b.title)}</span>
+            <span class="badge ${STATUS[b.status].class}">${STATUS[b.status].label}</span>
+            ${finished ? '<span class="badge done">✓ 이 날 완독</span>' : ''}
+          </div>
+          ${b.author ? `<div class="card-author">${escapeHtml(b.author)}</div>` : ''}
+          <div class="card-meta">
+            ${range ? `<span class="date-range">📅 ${range}</span>` : ''}
+            ${stars ? `<span class="stars">${stars}</span>` : ''}
+          </div>
+          ${b.review ? `<div class="card-review">${escapeHtml(b.review)}</div>` : ''}
+        </div></div>`;
+      });
+    }
+    box.innerHTML = html;
+  }
+
+  function render(){
+    $('#calTitle').textContent = cy + '년 ' + (cm+1) + '월';
+    const firstDow = new Date(cy, cm, 1).getDay();
+    const daysInMonth = new Date(cy, cm+1, 0).getDate();
+    const today = todayStr();
+    grid.innerHTML = '';
+
+    WD.forEach((w, i)=>{
+      const el = document.createElement('div');
+      el.className = 'cal-wd' + (i===0 ? ' sun' : '');
+      el.textContent = w;
+      grid.appendChild(el);
+    });
+    for(let i=0; i<firstDow; i++){
+      const el = document.createElement('div');
+      el.className = 'cal-cell empty';
+      grid.appendChild(el);
+    }
+
+    let readDays = 0;
+    for(let d=1; d<=daysInMonth; d++){
+      const ds = ymd(cy, cm, d);
+      const list = booksOnDate(ds);
+      if(list.length) readDays++;
+      const finished = list.some(b=> b.status==='done' && (b.endDate || b.date) === ds);
+      const dow = (firstDow + d - 1) % 7;
+
+      const el = document.createElement('button');
+      el.type = 'button';
+      el.className = 'cal-cell' + (dow===0 ? ' sun' : '') + (ds===today ? ' today' : '') + (ds===selected ? ' selected' : '');
+      const dots = list.slice(0,4).map(b=> `<span class="cal-dot ${b.status}"></span>`).join('');
+      el.innerHTML = `<span class="cal-num">${d}</span>
+        <span class="cal-bottom"><span class="cal-dots">${dots}</span>${finished ? '<span class="cal-check">✓</span>' : ''}</span>`;
+      el.addEventListener('click', ()=>{ selected = ds; render(); });
+      grid.appendChild(el);
+    }
+
+    const prefix = cy + '-' + pad2(cm+1);
+    const finishedCount = state.books.filter(b=> b.status==='done' && (b.endDate || b.date || '').startsWith(prefix)).length;
+    $('#calSummary').textContent = `이달의 완독 ${finishedCount}권 · 독서한 날 ${readDays}일`;
+    renderDetail();
+  }
+
+  $('#calPrev').addEventListener('click', ()=>{ cm--; if(cm<0){ cm=11; cy--; } render(); });
+  $('#calNext').addEventListener('click', ()=>{ cm++; if(cm>11){ cm=0; cy++; } render(); });
+  $('#calToday').addEventListener('click', ()=>{
+    const t = new Date(); cy = t.getFullYear(); cm = t.getMonth(); selected = todayStr(); render();
+  });
+  render();
+}
+
 // ===== init =====
 document.addEventListener('DOMContentLoaded', ()=>{
   initTheme();
@@ -496,4 +603,5 @@ document.addEventListener('DOMContentLoaded', ()=>{
   initListPage();
   initBoardPage();
   initSyncPage();
+  initCalendarPage();
 });
