@@ -285,3 +285,14 @@ nav.main-nav a.active, nav.main-nav a:hover{ color: var(--gold); text-decoration
   cursor: pointer;
 }
 input[type="date"]::-webkit-calendar-picker-indicator{ cursor:pointer; }
+
+/* ---------- GEO: 요약 박스 / 브레드크럼 / FAQ ---------- */
+.breadcrumb{ font-size:12px; color:var(--text-muted); margin-bottom:14px; }
+.breadcrumb a{ color:var(--text-muted); }
+.summary-box{ background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--gold); border-radius:10px; padding:14px 18px; margin:0 0 8px; }
+.summary-box strong{ font-family:'Fraunces', serif; font-size:15px; color:var(--gold); }
+.summary-box ul{ margin:8px 0 0; padding-left:18px; }
+.summary-box li{ font-size:14px; line-height:1.7; }
+.faq-item{ margin-bottom:6px; }
+.faq-item h3{ font-size:15px; margin:18px 0 4px; font-family:'Inter', sans-serif; }
+.faq-item p{ margin:0; }
