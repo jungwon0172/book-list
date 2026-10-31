@@ -296,3 +296,10 @@ input[type="date"]::-webkit-calendar-picker-indicator{ cursor:pointer; }
 .faq-item{ margin-bottom:6px; }
 .faq-item h3{ font-size:15px; margin:18px 0 4px; font-family:'Inter', sans-serif; }
 .faq-item p{ margin:0; }
+
+/* ---------- 헤더 2단 구조: 우측 상단은 소개/문의 전용 ---------- */
+.site-header-inner{ flex-direction:column; align-items:stretch; flex-wrap:nowrap; gap:12px; }
+.header-top{ display:flex; justify-content:space-between; align-items:center; gap:12px; }
+.header-top .util-nav{ margin-left:auto; justify-content:flex-end; }
+.header-bottom{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
+.header-tools{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
