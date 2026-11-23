@@ -8,14 +8,13 @@
 - 데이터 저장: 브라우저 localStorage (서버 저장 없음). 모바일과 컴퓨터 간 자동 연동은 없고 동기화 코드로 수동 이전
 - 친구 공유 시 전달되는 정보: 닉네임, 목표 권수, 완료 권수만 (책 제목·한줄평 제외)
 - 언어: 한국어
-- 최종 수정일: 2026-10-31
+- 최종 수정일: 2026-11-23
 
 ## 페이지
 - [홈 — 연간 목표와 책장](https://book-list-alpha-jade.vercel.app/): 목표 권수 설정과 완독 현황
 - [독서리스트](https://book-list-alpha-jade.vercel.app/list.html): 책 추가·수정·삭제, 상태별 필터
 - [독서 달력](https://book-list-alpha-jade.vercel.app/calendar.html): 읽은 기간을 달력으로 확인
 - [친구와 함께](https://book-list-alpha-jade.vercel.app/board.html): 공유 링크로 진행률 비교
-- [기기 동기화](https://book-list-alpha-jade.vercel.app/sync.html): 코드로 기록 내보내기·가져오기
 - [독서 챌린지 가이드](https://book-list-alpha-jade.vercel.app/guide.html): 목표 설정 방법과 자주 묻는 질문
 - [소개](https://book-list-alpha-jade.vercel.app/about.html), [문의](https://book-list-alpha-jade.vercel.app/contact.html), [개인정보처리방침](https://book-list-alpha-jade.vercel.app/privacy.html), [이용약관](https://book-list-alpha-jade.vercel.app/terms.html)
 

@@ -3,14 +3,26 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>책장 — 독서 챌린지 & 독서리스트</title>
-<meta name="description" content="연간 독서 목표를 책장 시각화로 채워가는 독서 챌린지 & 독서리스트 관리 도구." />
+<title>책장 — 독서 챌린지 · 독서리스트 · 독서 달력</title>
+<meta name="description" content="연간 목표 권수를 책장에 채워가는 무료 독서 챌린지. 독서리스트, 읽은 기간 달력, 친구와 진행률 공유까지 회원가입 없이 쓸 수 있어요." />
 <link rel="canonical" href="https://book-list-alpha-jade.vercel.app/" />
-<meta property="og:title" content="책장 — 독서 챌린지 & 독서리스트" />
-<meta property="og:description" content="연간 독서 목표를 책장 시각화로 채워가는 독서 챌린지 & 독서리스트 관리 도구." />
+<meta property="og:title" content="책장 — 독서 챌린지 · 독서리스트 · 독서 달력" />
+<meta property="og:description" content="연간 목표 권수를 책장에 채워가는 무료 독서 챌린지. 독서리스트, 읽은 기간 달력, 친구와 진행률 공유까지 회원가입 없이 쓸 수 있어요." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://book-list-alpha-jade.vercel.app/" />
 
+<meta property="og:site_name" content="책장" />
+<meta property="og:locale" content="ko_KR" />
+<meta property="og:image" content="https://book-list-alpha-jade.vercel.app/og-image.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="책장 — 독서 챌린지 · 독서리스트 · 독서 달력" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="theme-color" content="#12182B" />
+<meta name="robots" content="index,follow,max-image-preview:large" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 <meta name="naver-site-verification" content="94036a1381612caa27bb5603e05f2cc52f9e1044" />
 <script>
 (function(){
@@ -34,8 +46,11 @@
       "@id": "https://book-list-alpha-jade.vercel.app/#website",
       "url": "https://book-list-alpha-jade.vercel.app/",
       "name": "책장",
-      "description": "연간 독서 목표를 책장 시각화로 채워가는 독서 챌린지 & 독서리스트 관리 도구.",
-      "inLanguage": "ko-KR"
+      "description": "연간 목표 권수를 책장에 채워가는 무료 독서 챌린지. 독서리스트, 읽은 기간 달력, 친구와 진행률 공유까지 회원가입 없이 쓸 수 있어요.",
+      "inLanguage": "ko-KR",
+      "publisher": {
+        "@id": "https://book-list-alpha-jade.vercel.app/#org"
+      }
     },
     {
       "@type": "WebApplication",
@@ -59,6 +74,20 @@
         "링크로 친구와 진행률 공유",
         "코드 기반 기기 간 동기화"
       ]
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://book-list-alpha-jade.vercel.app/#org",
+      "name": "책장",
+      "url": "https://book-list-alpha-jade.vercel.app/",
+      "logo": "https://book-list-alpha-jade.vercel.app/apple-touch-icon.png",
+      "email": "yjw2172@naver.com",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "email": "yjw2172@naver.com",
+        "availableLanguage": "ko"
+      }
     }
   ]
 }
@@ -98,6 +127,8 @@
 </header>
 
 <div class="wrap">
+  <h1 class="page-title">올해의 독서 목표, 책장으로 채워보세요</h1>
+  <p class="page-sub">목표 권수를 정하고, 다 읽은 책을 한 칸씩 책장에 꽂아보세요.</p>
   <div class="hero">
     <div class="hero-top">
       <div class="goal-line">
